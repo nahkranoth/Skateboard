@@ -8,7 +8,9 @@ public class CountRotations : MonoBehaviour
 {
     private float totalRotation = 0;
 
-    public int nrOfRotations
+    public int completedRotations = 0;
+
+    private int nrOfRotations
     {
         get
         {
@@ -40,5 +42,11 @@ public class CountRotations : MonoBehaviour
 
         totalRotation += angle;
         lastPoint = facing;
+
+        //nr of rotations is fragile because we may rotate back a little, better to use the current maximum amount:
+        if (Mathf.Abs(nrOfRotations) > completedRotations)
+        {
+            completedRotations = Mathf.Abs(nrOfRotations);
+        }
     }
 }
