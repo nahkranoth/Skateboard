@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkateGame", "Assembly-CSharp.csproj", "{C2200B50-69C1-D048-0000-015C140CF5D1}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkateGame.CSharp", "SkateGame.CSharp.csproj", "{9C845485-22C9-5CC2-D015-16C520A8AB57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,15 +9,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C2200B50-69C1-D048-0000-015C140CF5D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2200B50-69C1-D048-0000-015C140CF5D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2200B50-69C1-D048-0000-015C140CF5D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2200B50-69C1-D048-0000-015C140CF5D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C845485-22C9-5CC2-D015-16C520A8AB57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C845485-22C9-5CC2-D015-16C520A8AB57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C845485-22C9-5CC2-D015-16C520A8AB57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C845485-22C9-5CC2-D015-16C520A8AB57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal

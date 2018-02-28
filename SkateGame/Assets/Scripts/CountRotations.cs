@@ -26,14 +26,21 @@ public class CountRotations : MonoBehaviour
         //Forward and Y to correctly predict rotation around y axis
         //up and x to correctly predict rotation around x axis
         //right and z to correctly predict rotation around z axis
-        lastPoint = transform.TransformDirection(Vector3.up);
+        lastPoint = transform.TransformDirection(Vector3.back);
         lastPoint.x = 0;
+
     }
+
+    //I need to check against the Trick i'm expecting.
+    //A kickflip checks over axis z
+    //Impossible checks over axis x
+    //Vector3.forward for NO x axis
+    //Vector3.back for No z axis
 
     // Update is called once per frame
     private void Update()
     {
-        Vector3 facing = transform.TransformDirection(Vector3.up);
+        Vector3 facing = transform.TransformDirection(Vector3.back);
         facing.x = 0;
 
         float angle = Vector3.Angle(lastPoint, facing);
@@ -47,6 +54,7 @@ public class CountRotations : MonoBehaviour
         if (Mathf.Abs(nrOfRotations) > completedRotations)
         {
             completedRotations = Mathf.Abs(nrOfRotations);
+            Debug.Log(completedRotations);
         }
     }
 }

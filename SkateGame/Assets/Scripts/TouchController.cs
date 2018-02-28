@@ -105,7 +105,6 @@ public class TouchController : MonoBehaviour
 
 		int _direction = _dragAngle > 0 ? 1 : -1;
 		float _angleToZPosition = _forwardPositionWeight - (_forwardPositionWeight * (Mathf.Abs (_dragAngle) / 180f)) * 2f;
-
 		float _xPolarIntensity = GetXIntesity (_dragAngle);
 
 		Vector3 _rotatedPosition = Quaternion.Euler (0, skateboard.transform.eulerAngles.y, 0) * new Vector3 (_xPolarIntensity * 0.05f, 0.3f, _angleToZPosition);
@@ -113,9 +112,9 @@ public class TouchController : MonoBehaviour
 		Vector3 _forceVector = skateboard.transform.position + new Vector3 (0, -_contactFireForce * _forceMagnitude, 0);
 
 		Debug.DrawRay (_forcePosition, Vector3.down, Color.green, 5f);
+        Vector3 _force = new Vector3(0, -_contactFireForce * _forceMagnitude, 0);
 
-		skateboard.AddForceAtPosition (new Vector3 (0, -_contactFireForce * _forceMagnitude, 0), _forcePosition);
-		skateboard.Jump (_contactFireForce * _forceMagnitude);
+        skateboard.doTrick(_force, _forcePosition, _contactFireForce * _forceMagnitude, _dragAngle);
 	}
 
 	//Here we divide the angle of forward drag to 5 steps

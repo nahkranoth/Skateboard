@@ -5,6 +5,8 @@ using UnityEngine;
 public class Skateboard : MonoBehaviour
 {
     public TrickTextController trickText;
+    public ScoreTextController scoreText;
+
     public TrailRenderer _trailA;
     public TrailRenderer _trailB;
     public OsciloscopeController ZOsciloscope;
@@ -27,21 +29,14 @@ public class Skateboard : MonoBehaviour
         _startRotation = _rigid.rotation;
     }
 
+    private float modToRotation(float rot)
+    {
+        return Mathf.Abs(rot % 360f);
+    }
+
     private void FixedUpdate()
     {
-        if (_jumping)
-        {
-            //Debug.Log(transform.forward - (transform.eulerAngles/360));//.z is z axis normalized
-            //Debug.Log(transform.right);
-
-            ZOsciloscope.SetNormalizedValue(transform.eulerAngles.z / 360);
-
-            //ZOsciloscope.SetNormalizedValue(transform.eulerAngles.y / 360);
-            //XOsciloscope.SetNormalizedValue(transform.eulerAngles.x / 360);
-
-            TrackRotation(transform.localEulerAngles.x);
-        }
-        else
+        if (!_jumping)
         {
             //Anna hack - if you use arrows on the PC, you can see the skateboard rotating precisely on z or y axis.
             float turn = Input.GetAxis("Horizontal");
@@ -68,35 +63,6 @@ public class Skateboard : MonoBehaviour
         }
     }
 
-    private bool _halfFlipZTrigger = false;
-    private bool _fullFlipZTrigger = false;
-
-    private void TrackRotation(float rotation)
-    {
-        //Debug.Log(rotation);
-        //I'm not sure if it would not be better to add current and previous rotations, track it that way.
-        if (InRange(Mathf.Abs(rotation), 160, 180) && !_halfFlipZTrigger)
-        {
-            _halfFlipZTrigger = true;
-            Debug.Log("Half flip");
-        }
-        if (InRange(Mathf.Abs(rotation), 0, 20) && _halfFlipZTrigger)
-        {
-            _halfFlipZTrigger = false;
-            _fullFlipZTrigger = true;
-            Debug.Log("Full flip");
-        }
-    }
-
-    private bool InRange(float val, float min, float max)
-    {
-        if (val <= max && val >= min)
-        {
-            return true;
-        }
-        return false;
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (!_jumping)
@@ -107,22 +73,19 @@ public class Skateboard : MonoBehaviour
 
     private void Landed()
     {
-        if (_fullFlipZTrigger)
-        {
-            trickText.AddTrick("Full Flip");
-        }
-        ResetFlipTracking();
+        resetTrickTracking();
     }
 
-    private void ResetFlipTracking()
+    public void doTrick(Vector3 force, Vector3 forcePos, float verticalForce, float trickAngle)
     {
-        _halfFlipZTrigger = false;
-        _fullFlipZTrigger = false;
+        addForceAtPosition(force, forcePos);
+        jump(verticalForce);
+        trackTrick(trickAngle);
     }
 
     public void ResetToStartPosition()
     {
-        ResetFlipTracking();
+        resetTrickTracking();
         _jumping = false;
         //if you set IsKinematic in one frame, it has zero effect. What you probably want is:
         //_rigid.angularVelocity = Vector3.zero;
@@ -133,11 +96,64 @@ public class Skateboard : MonoBehaviour
         _rigid.isKinematic = false;
     }
 
-    public void Jump(float _force)
+    List<TrickData> trickList = new List<TrickData>() {
+        new TrickData("heelflip", 90f, TrickData.TrickAxis.x, 1),
+        new TrickData("impossible", 0f, TrickData.TrickAxis.z, 2),
+        new TrickData("rest", -999f, TrickData.TrickAxis.z, 0)
+    };
+
+    private float _trickAngleTreshold = 30f;
+
+    private void resetTrickTracking()
+    {
+
+    }
+
+    public void trackTrick(float angle)
+    {
+        //track current tricks - dont stack the same kind of tricks, only when a trick has done it's rotation can you add another trick
+        //or double the same trick (double kickflip)
+        trickText.AddTrick(findTrick(angle).name);
+        scoreText.AddScore(findTrick(angle).points);
+
+    }
+
+    private TrickData findTrick(float angle)
+    {
+        TrickData res = null;
+
+        trickList.ForEach((TrickData t)=>
+        {
+            if (inRange(t.detectionAngle, angle))
+            {
+                res = t;
+            }
+        });
+
+        if(res == null)
+        {
+            res = trickList[trickList.Count-1];
+        }
+
+        return res;
+    }
+
+    private bool inRange(float range, float angle)
+    {
+        if(modToRotation(angle) >= range - _trickAngleTreshold && modToRotation(angle) <= range + _trickAngleTreshold)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void jump(float _force)
     {
         if (_jumping)
             return;
         trickText.ClearText();
+        scoreText.ClearText();
+
         //Assumption that if you start jumping you actually leave the ground is incorrect.
         //on a computer at least, the Box collider attached to the object almost never leaves the ground,
         //therefore _jumping is never reset to false, and the game freezes after the first stunt.
@@ -150,7 +166,7 @@ public class Skateboard : MonoBehaviour
         _rigid.AddForceAtPosition(new Vector3(_jumpForce.x, _jumpForce.y * _force, _jumpForce.z), transform.position);
     }
 
-    public void AddForceAtPosition(Vector3 _force, Vector3 _position)
+    public void addForceAtPosition(Vector3 _force, Vector3 _position)
     {
         _rigid.AddForceAtPosition(_force, _position);
     }
