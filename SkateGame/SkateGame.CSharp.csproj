@@ -83,6 +83,8 @@
     <Compile Include="Assets\Scripts\TouchController.cs" />
     <Compile Include="Assets\Scripts\TrickData.cs" />
     <Compile Include="Assets\Scripts\TrickTextController.cs" />
+    <Compile Include="Assets\SkateBoardHitTrigger.cs" />
+    <Compile Include="Assets\TotalScore.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\Osciloscope 1.shader" />

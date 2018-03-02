@@ -7,12 +7,13 @@ public class ScoreTextController : MonoBehaviour {
 
     private string _trickText;
     private Text textUI;
-
+    private Color originalColor;
     private int currentScore = 0;
 
     void Start()
     {
         textUI = GetComponent<Text>();
+        originalColor = textUI.color;
         if (!textUI)
         {
             Debug.LogError("No Text Component on this GameObject");
@@ -26,6 +27,11 @@ public class ScoreTextController : MonoBehaviour {
         SetText();
     }
 
+    public void setScoreFail()
+    {
+        textUI.color = Color.red;
+    }
+
     private void SetText()
     {
         textUI.text = _trickText;
@@ -33,6 +39,7 @@ public class ScoreTextController : MonoBehaviour {
 
     public void ClearText()
     {
+        textUI.color = originalColor;
         currentScore = 0;
         textUI.text = "";
         _trickText = "";

@@ -6,6 +6,10 @@ public class Skateboard : MonoBehaviour
 {
     public TrickTextController trickText;
     public ScoreTextController scoreText;
+    public TotalScore totalScoreText;
+
+    public SkateBoardHitTrigger topHitTrigger;
+    public SkateBoardHitTrigger bottomHitTrigger;
 
     public TrailRenderer _trailA;
     public TrailRenderer _trailB;
@@ -16,10 +20,12 @@ public class Skateboard : MonoBehaviour
     private Quaternion _startRotation;
     private Rigidbody _rigid;
     private bool _jumping;
+    private bool _landed;
     private Vector3 _jumpForce = new Vector3(0, 4.5f, 0);
     private Vector3 _velocity = new Vector3();
     private Vector3 _previousPosition = new Vector3();
     private Vector3 _deltaV;
+    private int potentialScore;
 
     // Use this for initialization
     private void Start()
@@ -31,7 +37,7 @@ public class Skateboard : MonoBehaviour
 
     private float modToRotation(float rot)
     {
-        return Mathf.Abs(rot % 360f);
+        return rot % 360f;
     }
 
     private void FixedUpdate()
@@ -66,7 +72,10 @@ public class Skateboard : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!_jumping)
+        {
             return;
+        }
+
         _jumping = false;
         Landed();
     }
@@ -74,13 +83,25 @@ public class Skateboard : MonoBehaviour
     private void Landed()
     {
         resetTrickTracking();
+        bool landedTop = topHitTrigger.active;
+        bool landedBottom = bottomHitTrigger.active;
+
+        if (landedBottom)
+        {
+            totalScoreText.setScoreText(potentialScore);
+        }else
+        {
+            trickText.setScoreFail();
+            scoreText.setScoreFail();
+        }
+        potentialScore = 0;
     }
 
     public void doTrick(Vector3 force, Vector3 forcePos, float verticalForce, float trickAngle)
     {
         addForceAtPosition(force, forcePos);
         jump(verticalForce);
-        trackTrick(trickAngle);
+        startTrackingTrick(trickAngle);
     }
 
     public void ResetToStartPosition()
@@ -97,8 +118,10 @@ public class Skateboard : MonoBehaviour
     }
 
     List<TrickData> trickList = new List<TrickData>() {
-        new TrickData("heelflip", 90f, TrickData.TrickAxis.x, 1),
-        new TrickData("impossible", 0f, TrickData.TrickAxis.z, 2),
+        new TrickData("heelflip", 90f, TrickData.TrickAxis.x, 100),
+        new TrickData("impossible", 0f, TrickData.TrickAxis.z, 200),
+        new TrickData("hardflip", 180f, TrickData.TrickAxis.z, 200),
+        new TrickData("kickflip", -100f, TrickData.TrickAxis.x, 200),
         new TrickData("rest", -999f, TrickData.TrickAxis.z, 0)
     };
 
@@ -109,19 +132,21 @@ public class Skateboard : MonoBehaviour
 
     }
 
-    public void trackTrick(float angle)
+    public void startTrackingTrick(float angle)
     {
         //track current tricks - dont stack the same kind of tricks, only when a trick has done it's rotation can you add another trick
         //or double the same trick (double kickflip)
-        trickText.AddTrick(findTrick(angle).name);
-        scoreText.AddScore(findTrick(angle).points);
-
+        var points = findTrick(angle).points;
+        var name = findTrick(angle).name;
+        trickText.AddTrick(name);
+        scoreText.AddScore(points);
+        potentialScore += points;
     }
 
     private TrickData findTrick(float angle)
     {
         TrickData res = null;
-
+        Debug.Log(angle);
         trickList.ForEach((TrickData t)=>
         {
             if (inRange(t.detectionAngle, angle))
@@ -151,6 +176,8 @@ public class Skateboard : MonoBehaviour
     {
         if (_jumping)
             return;
+
+        _landed = false;
         trickText.ClearText();
         scoreText.ClearText();
 
