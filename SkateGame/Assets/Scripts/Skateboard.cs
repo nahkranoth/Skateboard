@@ -27,12 +27,19 @@ public class Skateboard : MonoBehaviour
     private Vector3 _deltaV;
     private int potentialScore;
 
+    private bool locked = true;
+
     // Use this for initialization
     private void Start()
     {
         _rigid = GetComponent<Rigidbody>();
         _startPosition = _rigid.position;
         _startRotation = _rigid.rotation;
+    }
+
+    public void activateMe()
+    {
+        locked = false;
     }
 
     private float modToRotation(float rot)
@@ -99,6 +106,7 @@ public class Skateboard : MonoBehaviour
 
     public void doTrick(Vector3 force, Vector3 forcePos, float verticalForce, float trickAngle)
     {
+        if (locked) return;
         addForceAtPosition(force, forcePos);
         jump(verticalForce);
         startTrackingTrick(trickAngle);
