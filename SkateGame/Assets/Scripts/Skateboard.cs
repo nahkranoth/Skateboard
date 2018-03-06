@@ -114,6 +114,7 @@ public class Skateboard : MonoBehaviour
 
     public void ResetToStartPosition()
     {
+        Debug.Log("RESET !");
         resetTrickTracking();
         _jumping = false;
         //if you set IsKinematic in one frame, it has zero effect. What you probably want is:
