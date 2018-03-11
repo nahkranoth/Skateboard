@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
+    public AudioManager audioManager;
     public GameObject homeScreen;
     public GameObject scoreScreen;
     public GameObject dummyScreen;
@@ -89,6 +90,7 @@ public class GameController : MonoBehaviour {
     {
         startTime = DateTime.Now;
         skateBoard.activateMe();
+        //audioManager.start();
         timerToggled = true;
     }
 
@@ -97,5 +99,6 @@ public class GameController : MonoBehaviour {
         endScoreText.text = totalScoreText.score.ToString();
         timerToggled = false;
         switchScreen(score);
+        audioManager.stop();
     }
 }

@@ -7,13 +7,15 @@ public class Skateboard : MonoBehaviour
     public TrickTextController trickText;
     public ScoreTextController scoreText;
     public TotalScore totalScoreText;
+    public CountRotations rotationCounter;
+    public AudioManager audioManager;
 
     public SkateBoardHitTrigger topHitTrigger;
     public SkateBoardHitTrigger bottomHitTrigger;
 
     public TrailRenderer _trailA;
     public TrailRenderer _trailB;
-    public OsciloscopeController ZOsciloscope;
+
     //public OsciloscopeController XOsciloscope;
 
     private Vector3 _startPosition;
@@ -59,7 +61,7 @@ public class Skateboard : MonoBehaviour
         }
         _deltaV = transform.position - _previousPosition;
         SetTrail();
-
+        trackTrick();
         _previousPosition = transform.position;
     }
 
@@ -70,7 +72,8 @@ public class Skateboard : MonoBehaviour
             _trailA.time = 0.3f;
             _trailB.time = 0.3f;
         }
-        else {
+        else
+        {
             _trailA.time = 0;
             _trailB.time = 0;
         }
@@ -89,32 +92,37 @@ public class Skateboard : MonoBehaviour
 
     private void Landed()
     {
-        resetTrickTracking();
+
         bool landedTop = topHitTrigger.active;
         bool landedBottom = bottomHitTrigger.active;
 
         if (landedBottom)
         {
+            audioManager.playLanded();
             totalScoreText.setScoreText(potentialScore);
-        }else
+        }
+        else
         {
+            audioManager.playFail();
             trickText.setScoreFail();
             scoreText.setScoreFail();
         }
+        locked = false;
         potentialScore = 0;
     }
 
     public void doTrick(Vector3 force, Vector3 forcePos, float verticalForce, float trickAngle)
     {
         if (locked) return;
+        locked = true;
         addForceAtPosition(force, forcePos);
         jump(verticalForce);
         startTrackingTrick(trickAngle);
+        audioManager.playJump();
     }
 
     public void ResetToStartPosition()
     {
-        Debug.Log("RESET !");
         resetTrickTracking();
         _jumping = false;
         //if you set IsKinematic in one frame, it has zero effect. What you probably want is:
@@ -138,7 +146,8 @@ public class Skateboard : MonoBehaviour
 
     private void resetTrickTracking()
     {
-
+        locked = false;
+        rotationCounter.Reset();
     }
 
     public void startTrackingTrick(float angle)
@@ -152,11 +161,19 @@ public class Skateboard : MonoBehaviour
         potentialScore += points;
     }
 
+    private void trackTrick()
+    {
+        if (Mathf.Abs(rotationCounter.completedXRotations) == 1 || Mathf.Abs(rotationCounter.completedZRotations) == 1)
+        {
+            trickText.fireCompleted();
+            resetTrickTracking();
+        }
+    }
+
     private TrickData findTrick(float angle)
     {
         TrickData res = null;
-        Debug.Log(angle);
-        trickList.ForEach((TrickData t)=>
+        trickList.ForEach((TrickData t) =>
         {
             if (inRange(t.detectionAngle, angle))
             {
@@ -164,9 +181,9 @@ public class Skateboard : MonoBehaviour
             }
         });
 
-        if(res == null)
+        if (res == null)
         {
-            res = trickList[trickList.Count-1];
+            res = trickList[trickList.Count - 1];
         }
 
         return res;
@@ -174,7 +191,7 @@ public class Skateboard : MonoBehaviour
 
     private bool inRange(float range, float angle)
     {
-        if(modToRotation(angle) >= range - _trickAngleTreshold && modToRotation(angle) <= range + _trickAngleTreshold)
+        if (modToRotation(angle) >= range - _trickAngleTreshold && modToRotation(angle) <= range + _trickAngleTreshold)
         {
             return true;
         }
@@ -196,10 +213,12 @@ public class Skateboard : MonoBehaviour
         //the same happens on my mobile
         //move _jumping=true to oncolliderexit
         _jumping = true;
-        Debug.Log("FORCE: " + _force);
 
-        Debug.DrawRay(transform.position, Vector3.down, Color.blue, 5f);
-        _rigid.AddForceAtPosition(new Vector3(_jumpForce.x, _jumpForce.y * _force, _jumpForce.z), transform.position);
+        //LET CAP GROW WITH COMBO
+        float cappedJumpForce = Mathf.Min(_force, 30f);
+
+        //Debug.DrawRay(transform.position, Vector3.down, Color.blue, 5f);
+        _rigid.AddForceAtPosition(new Vector3(_jumpForce.x, _jumpForce.y * cappedJumpForce, _jumpForce.z), transform.position);
     }
 
     public void addForceAtPosition(Vector3 _force, Vector3 _position)

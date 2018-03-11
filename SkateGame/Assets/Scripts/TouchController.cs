@@ -112,6 +112,7 @@ public class TouchController : MonoBehaviour
 		Vector3 _forceVector = skateboard.transform.position + new Vector3 (0, -_contactFireForce * _forceMagnitude, 0);
 
 		Debug.DrawRay (_forcePosition, Vector3.down, Color.green, 5f);
+
         Vector3 _force = new Vector3(0, -_contactFireForce * _forceMagnitude, 0);
 
         skateboard.doTrick(_force, _forcePosition, _contactFireForce * _forceMagnitude, _dragAngle);

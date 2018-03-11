@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkateGame.CSharp", "SkateGame.CSharp.csproj", "{9C845485-22C9-5CC2-D015-16C520A8AB57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkateGame.CSharp.Plugins", "SkateGame.CSharp.Plugins.csproj", "{C2C382D0-A7CB-5167-069B-9959F52C401F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkateGame.CSharp.Editor.Plugins", "SkateGame.CSharp.Editor.Plugins.csproj", "{4319C349-5CDE-3A59-F87E-6C1268D5253D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +17,14 @@ Global
 		{9C845485-22C9-5CC2-D015-16C520A8AB57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C845485-22C9-5CC2-D015-16C520A8AB57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C845485-22C9-5CC2-D015-16C520A8AB57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2C382D0-A7CB-5167-069B-9959F52C401F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2C382D0-A7CB-5167-069B-9959F52C401F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2C382D0-A7CB-5167-069B-9959F52C401F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2C382D0-A7CB-5167-069B-9959F52C401F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4319C349-5CDE-3A59-F87E-6C1268D5253D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4319C349-5CDE-3A59-F87E-6C1268D5253D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4319C349-5CDE-3A59-F87E-6C1268D5253D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4319C349-5CDE-3A59-F87E-6C1268D5253D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
